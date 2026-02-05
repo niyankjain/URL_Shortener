@@ -1,4 +1,4 @@
-package com.io.infracloud.urlshortener;
+package com.io.infracloud.urlshortener.config;
 
 import org.hashids.Hashids;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +11,7 @@ public class HashidsConfig {
 
   @Bean
   public Hashids hashids() {
-    return new Hashids(URLShortenerConstant.SALT, 7, URLShortenerConstant.BASE62);
+    return new Hashids(URLShortenerConstant.SALT,
+        7, URLShortenerConstant.BASE62);
   }
 }

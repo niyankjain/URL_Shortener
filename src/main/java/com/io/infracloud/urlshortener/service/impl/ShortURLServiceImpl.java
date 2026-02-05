@@ -3,6 +3,7 @@ package com.io.infracloud.urlshortener.service.impl;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hashids.Hashids;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -11,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.io.infracloud.urlshortener.dto.LongURLRecord;
+import com.io.infracloud.urlshortener.dto.LongURLRequestDTO;
 import com.io.infracloud.urlshortener.dto.ResponseDTO;
 import com.io.infracloud.urlshortener.entity.Domain;
 import com.io.infracloud.urlshortener.entity.ShortURL;
@@ -34,11 +35,15 @@ public class ShortURLServiceImpl implements ShortURLService {
 
   @Override
   @Transactional
-  public ResponseEntity<ResponseDTO> constructShortURL(LongURLRecord longURLRecord) {
+  public ResponseEntity<ResponseDTO> constructShortURL(LongURLRequestDTO longURLRequestDTO) {
+
+    if(longURLRequestDTO == null || StringUtils.isBlank(longURLRequestDTO.getLongURL())) {
+      throw new IllegalArgumentException("Please provide required details");
+    }
 
     LOGGER.info("inside service layer going to invoke @constructShortURL method");
-    String longUrlHash = HashUtils.sha256(longURLRecord.longURL());
-    String domainName = UrlUtils.extractDomain(longURLRecord.longURL());
+    String longUrlHash = HashUtils.sha256(longURLRequestDTO.getLongURL());
+    String domainName = UrlUtils.extractDomain(longURLRequestDTO.getLongURL());
 
     LOGGER.info("longUrlHash: {}, domainName: {}",longUrlHash, domainName);
     Optional<ShortURL> shortURLEntity = shortURLRepository.findByLongUrlHash(longUrlHash);
@@ -49,7 +54,7 @@ public class ShortURLServiceImpl implements ShortURLService {
 
     Domain domainEntity = getDomain(domainName);
     ShortURL shortURL = new ShortURL();
-    shortURL.setLongUrl(longURLRecord.longURL());
+    shortURL.setLongUrl(longURLRequestDTO.getLongURL());
     shortURL.setLongUrlHash(longUrlHash);
     shortURL.setCreatedAt(LocalDateTime.now());
     shortURL.setDomain(domainEntity);
