@@ -1,4 +1,4 @@
-package com.io.infracloud.url_shortener;
+package com.io.infracloud.urlshortener;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

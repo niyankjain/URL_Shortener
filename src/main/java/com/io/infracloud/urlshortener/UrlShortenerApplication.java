@@ -1,4 +1,4 @@
-package com.io.infracloud.url_shortener;
+package com.io.infracloud.urlshortener;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
