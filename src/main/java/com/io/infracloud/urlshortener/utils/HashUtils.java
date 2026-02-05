@@ -1,0 +1,22 @@
+package com.io.infracloud.urlshortener.utils;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.HexFormat;
+
+public class HashUtils {
+
+  public static String sha256(String input) {
+    try {
+      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+      return HexFormat.of().formatHex(hash);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static void main(String[] args) {
+    System.out.println(sha256("https://www.youtube.com/watch?v=abc123"));
+  }
+}

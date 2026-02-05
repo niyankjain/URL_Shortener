@@ -1,6 +1,5 @@
 package com.io.infracloud.urlshortener.entity;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -14,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -22,15 +22,16 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ShortUrl {
+@NoArgsConstructor
+public class ShortURL {
 
   @Id
   @Column(name="id")
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private BigInteger id;
+  private Long id;
 
   @Column(name="long_url")
-  private String lognUrl;
+  private String longUrl;
 
   @Column(name="shortCode")
   private String shortCode;

@@ -1,7 +1,7 @@
 server:
   port: 9091
   servlet:
-    context-path: "/url-shortner"
+    context-path: "/url-shortener"
 
 spring:
   application:
@@ -11,7 +11,7 @@ spring:
   datasource:
     url: "jdbc:mysql://localhost:3306/URL_SHORTENER"
     username: "username"
-    password: "Password"
+    password: "password"
     driver-class-name: "com.mysql.cj.jdbc.Driver"
   
   # JPA / Hibernate Settings
