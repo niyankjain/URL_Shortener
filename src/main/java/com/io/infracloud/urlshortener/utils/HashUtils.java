@@ -15,8 +15,4 @@ public class HashUtils {
       throw new RuntimeException(e);
     }
   }
-
-  public static void main(String[] args) {
-    System.out.println(sha256("https://www.youtube.com/watch?v=abc123"));
-  }
 }

@@ -1,7 +1,5 @@
 package com.io.infracloud.urlshortener.controller;
 
-import jakarta.validation.Valid;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
