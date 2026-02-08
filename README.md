@@ -47,6 +47,10 @@ Key goals of the project:
 ---
 
 ## 🧱 Architecture
+
+The URL Shortener follows a **layered Spring Boot architecture** with clear separation of concerns.
+
+### High-Level Flow
 Client
 │
 ▼
@@ -56,7 +60,47 @@ REST Controller
 Service Layer
 │
 ▼
-Repository (Spring Data JPA)
+Repository (JPA)
 │
 ▼
 MySQL Database
+
+
+## 📁 Package & File Structure
+```text
+src/main/java/com/io/infracloud/urlshortener
+├── controller
+│   ├── impl
+│   │   ├── ShortURLRestImpl.java
+│   │   └── DomainRestImpl.java
+│   └── api
+│       ├── ShortURLRest.java
+│       └── DomainRest.java
+│
+├── service
+│   ├── impl
+│   │   ├── ShortURLServiceImpl.java
+│   │   └── DomainServiceImpl.java
+│   └── api
+│       ├── ShortURLService.java
+│       └── DomainService.java
+│
+├── repository
+│   ├── ShortURLRepository.java
+│   └── DomainRepository.java
+│
+├── entity
+│   ├── ShortURL.java
+│   └── Domain.java
+│
+├── dto
+│   ├── LongURLRequestDTO.java
+│   ├── ResponseDTO.java
+│   └── MatrixResponseDTO.java
+│
+├── exception
+│   └── GlobalExceptionHandler.java
+│
+└── UrlShortenerApplication.java
+
+```text
