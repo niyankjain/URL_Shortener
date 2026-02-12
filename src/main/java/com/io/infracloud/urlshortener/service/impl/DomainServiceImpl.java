@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.io.infracloud.urlshortener.dto.MatrixResponseDTO;
-import com.io.infracloud.urlshortener.repository.DomainRepository;
 import com.io.infracloud.urlshortener.repository.ShortURLRepository;
 import com.io.infracloud.urlshortener.service.DomainService;
 

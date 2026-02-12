@@ -7,4 +7,6 @@ import com.io.infracloud.urlshortener.dto.ResponseDTO;
 
 public interface ShortURLService {
   ResponseEntity<ResponseDTO> constructShortURL(LongURLRequestDTO longURLRequestDTO);
+
+  ResponseEntity<String> getLongURL(String shortCode);
 }

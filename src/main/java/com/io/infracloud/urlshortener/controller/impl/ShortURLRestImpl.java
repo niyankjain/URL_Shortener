@@ -24,5 +24,13 @@ public class ShortURLRestImpl implements ShortURLRest {
     LOGGER.info("Inside rest layer going to invoke @constructShortURL");
     return shortURLService.constructShortURL(longURLRequestDTO);
   }
+
+  @Override
+  public ResponseEntity<String> getLongURL(String shortCode) {
+    LOGGER.info("Inside rest layer going to invoke @constructShortURL");
+    return shortURLService.getLongURL(shortCode);
+  }
+
+
 }
 

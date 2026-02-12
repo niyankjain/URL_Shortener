@@ -60,7 +60,6 @@ public class ShortURLServiceImpl implements ShortURLService {
     shortURL.setDomain(domainEntity);
     ShortURL shortURLEntityFromDB = shortURLRepository.save(shortURL);
     if(shortURLEntityFromDB != null && shortURLEntityFromDB.getId()>1) {
-
       String shortCode = hashids.encode(shortURLEntityFromDB.getId());
       shortURLEntityFromDB.setShortCode(shortCode);
       ShortURL save = shortURLRepository.save(shortURLEntityFromDB);
@@ -70,8 +69,16 @@ public class ShortURLServiceImpl implements ShortURLService {
       LOGGER.info("Not able to create Short URL");
       throw new RuntimeException("Not able to create Short URL");
     }
+  }
 
-
+  @Override
+  public ResponseEntity<String> getLongURL(String shortCode) {
+    Optional<String> longURL = shortURLRepository.findByShortCode(shortCode);
+    if(longURL.isPresent()) {
+      return ResponseEntity.ok(longURL.get());
+    } else {
+      return ResponseEntity.badRequest().body("longURL not exists");
+    }
   }
 
   private @NonNull Domain getDomain(String domainName) {
