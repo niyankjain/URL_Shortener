@@ -22,7 +22,6 @@ public interface ShortURLRepository extends JpaRepository<ShortURL, Long> {
       order by count(s.id) desc
       """)
   List<MatrixResponseDTO> findTopDomains(Pageable pageable);
-  
 
   @Query("select s.longUrl from ShortURL s where s.shortCode=:shortCode")
   Optional<String> findByShortCode(String shortCode);
