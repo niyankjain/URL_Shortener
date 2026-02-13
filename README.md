@@ -391,12 +391,36 @@ docker run -it \
 
 ### Docker Management Commands
 
+#### Container Lifecycle Management
+```bash
+# Start a new container
+docker run -d --name url-shortener-app -p 9091:9091 url-shortener:latest
+
+# Start a stopped container
+docker start url-shortener-app
+
+# Stop a running container (graceful shutdown)
+docker stop url-shortener-app
+
+# Force stop a container (immediate)
+docker kill url-shortener-app
+
+# Restart a container
+docker restart url-shortener-app
+
+# Remove a stopped container
+docker rm url-shortener-app
+
+# Remove a running container (force stop and remove)
+docker rm -f url-shortener-app
+```
+
 #### Container Operations
 ```bash
 # List running containers
 docker ps
 
-# List all containers
+# List all containers (including stopped)
 docker ps -a
 
 # View container logs
@@ -405,14 +429,18 @@ docker logs url-shortener-app
 # Follow logs in real-time
 docker logs -f url-shortener-app
 
-# Stop container
-docker stop url-shortener-app
+# View last 50 lines of logs
+docker logs --tail 50 url-shortener-app
 
-# Start stopped container
-docker start url-shortener-app
+# View logs since specific time
+docker logs --since "2024-01-01T00:00:00" url-shortener-app
 
-# Remove container
-docker rm url-shortener-app
+# Enter running container
+docker exec -it url-shortener-app /bin/bash
+
+# Attach to container's main process
+docker attach url-shortener-app
+# To detach without stopping: Ctrl+P then Ctrl+Q
 ```
 
 #### Image Operations
@@ -425,6 +453,9 @@ docker rmi url-shortener:latest
 
 # Remove all unused images
 docker image prune
+
+# Force remove image (even if used by containers)
+docker rmi -f url-shortener:latest
 ```
 
 ### Health Check

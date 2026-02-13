@@ -23,5 +23,5 @@ RUN mkdir -p logs
 # Expose port
 EXPOSE 9091
 
-# Run the application directly with java command
-CMD ["java", "-cp", "url-shortener-1.0.0.jar:lib/*", "-Dspring.config.location=file:./config/application.yaml", "-Dlogback.configurationFile=./config/logback.xml", "-Dspring.profiles.active=prod", "com.io.infracloud.urlshortener.URLShortenerApplication"]
+# Use run.sh as entrypoint
+ENTRYPOINT ["./run.sh"]
