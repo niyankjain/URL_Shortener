@@ -89,6 +89,7 @@ MySQL Database
 # Clone the repository
 git clone https://github.com/niyankjain/URL_Shortener.git
 cd url-shortener
+git checkout H2-database
 
 # Build and run
 ./gradlew clean build
