@@ -34,13 +34,13 @@ Key goals of the project:
   - Centralized exception handling
 
 - 🗄 **Persistence**
-  - MySQL database
+  - H2 database
   - JPA / Hibernate ORM
 
 - 📈 **Monitoring**
   - JavaMelody integration for:
     - HTTP request metrics
-    - JVM statistics
+    - JVM statistics 
     - SQL performance
     - Error tracking
 
@@ -64,7 +64,16 @@ Repository (JPA)
 │
 ▼
 MySQL Database
+---
 
+### Steps to Start Application
+- **Application running port**: 9091
+- **Application context path**: /url-shortener
+- **Application Base URL**: http://localhost:9091/url-shortener/
+- **H2 Database URL**: http://localhost:9091/url-shortener/h2-console
+- **Java Melody URL**: http://localhost:9091/url-shortener/monitoring
+
+---
 
 ## 📁 Package & File Structure
 ```text
@@ -94,13 +103,45 @@ src/main/java/com/io/infracloud/urlshortener
 │   └── Domain.java
 │
 ├── dto
+│   ├── ErrorResponseDTO.java
 │   ├── LongURLRequestDTO.java
 │   ├── ResponseDTO.java
 │   └── MatrixResponseDTO.java
 │
 ├── exception
-│   └── GlobalExceptionHandler.java
+│   └── handler
+│       └── CustomExceptionHandler.java
+│
+├── config
+│   └── HashidsConfig.java
+│
+├── utils
+│   ├── HashUtils.java
+│   ├── URLShortenerConstant.java
+│   └── UrlUtils.java
 │
 └── UrlShortenerApplication.java
+```
 
-```text
+## 🏗️ System Architecture
+
+The application follows a **layered architecture pattern** with clear separation of concerns:
+
+### Core Layers
+- **Presentation Layer**: REST Controllers handle HTTP requests and responses
+- **Business Layer**: Services contain business logic and validation
+- **Data Access Layer**: JPA Repositories manage database operations
+- **Database Layer**: MySQL for persistent storage
+
+### Key Design Patterns
+- **Repository Pattern**: For data access abstraction
+- **DTO Pattern**: For data transfer between layers
+- **Service Layer Pattern**: For business logic encapsulation
+- **Controller Pattern**: For REST API endpoints
+
+### Security & Validation
+- **Bean Validation**: Jakarta validation for request validation
+- **Global Exception Handling**: Centralized error processing
+- **Hash-based Encoding**: Secure short code generation using Hashids
+
+---
