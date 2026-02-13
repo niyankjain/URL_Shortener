@@ -313,3 +313,153 @@ The application follows a **layered architecture pattern** with clear separation
 - **Hash-based Encoding**: Secure short code generation using Hashids
 
 ---
+
+## 🐳 Docker Deployment
+
+### Prerequisites
+- **Docker** installed and running
+- **Docker Compose** (optional, for multi-container setups)
+
+### Build Docker Image
+
+#### Option 1: Build from Source
+```bash
+# Clone the repository
+git clone https://github.com/niyankjain/URL_Shortener.git
+cd url-shortener
+
+# Build the application
+./gradlew clean build
+
+# Build Docker image
+docker build -t url-shortener:latest .
+```
+
+#### Option 2: Pull from Registry (if published)
+```bash
+# Pull the image
+docker pull url-shortener:latest
+```
+
+### Run Docker Container
+
+#### Basic Run
+```bash
+# Run with default settings
+docker run -p 9091:9091 url-shortener:latest
+```
+
+#### Production Run (Recommended)
+```bash
+# Run in background with persistent logs
+docker run -d \
+  --name url-shortener-app \
+  -p 9091:9091 \
+  -v $(pwd)/logs:/app/logs \
+  --restart unless-stopped \
+  url-shortener:latest
+```
+
+#### Development Run with Debug
+```bash
+# Run with debug mode and shell access
+docker run -it \
+  --name url-shortener-dev \
+  -p 9091:9091 \
+  -e SPRING_PROFILES_ACTIVE=dev \
+  url-shortener:latest /bin/bash
+```
+
+### Docker Configuration
+
+#### Environment Variables
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SPRING_PROFILES_ACTIVE` | `prod` | Spring profile (dev/prod/test) |
+| `JAVA_OPTS` | `-Xmx512m -Xms256m` | JVM memory settings |
+
+#### Volume Mounts
+| Path | Description |
+|------|-------------|
+| `/app/logs` | Application logs directory |
+| `/app/config` | External configuration (if needed) |
+
+#### Port Mapping
+| Container Port | Host Port | Description |
+|---------------|------------|-------------|
+| `9091` | `9091` | Application HTTP port |
+
+### Docker Management Commands
+
+#### Container Operations
+```bash
+# List running containers
+docker ps
+
+# List all containers
+docker ps -a
+
+# View container logs
+docker logs url-shortener-app
+
+# Follow logs in real-time
+docker logs -f url-shortener-app
+
+# Stop container
+docker stop url-shortener-app
+
+# Start stopped container
+docker start url-shortener-app
+
+# Remove container
+docker rm url-shortener-app
+```
+
+#### Image Operations
+```bash
+# List images
+docker images
+
+# Remove image
+docker rmi url-shortener:latest
+
+# Remove all unused images
+docker image prune
+```
+
+### Health Check
+```bash
+# Check if application is running
+curl http://localhost:9091/url-shortener/actuator/health
+
+# Expected response
+{"status":"UP"}
+```
+
+### Troubleshooting
+
+#### Common Issues
+1. **Port Already in Use**
+   ```bash
+   # Check what's using port 9091
+   sudo netstat -tulpn | grep 9091
+   # Or use different port
+   docker run -p 9092:9091 url-shortener:latest
+   ```
+
+2. **Container Fails to Start**
+   ```bash
+   # Check logs for errors
+   docker logs url-shortener-app
+   
+   # Run in interactive mode for debugging
+   docker run -it url-shortener:latest /bin/bash
+   ```
+
+3. **Permission Issues**
+   ```bash
+   # Fix log directory permissions
+   sudo chown -R $USER:$USER logs/
+   ```
+
+---
