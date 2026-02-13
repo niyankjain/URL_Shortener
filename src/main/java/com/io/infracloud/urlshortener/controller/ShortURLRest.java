@@ -17,7 +17,7 @@ public interface ShortURLRest {
   @PostMapping(path = "/api/v1/constructShortURL", consumes = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<ResponseDTO> constructShortURL(@RequestBody(required = false) LongURLRequestDTO longURLRequestDTO);
 
-  @GetMapping(path="{shortCode}")
-  ResponseEntity<String> getLongURL(@PathVariable("shortCode") String shortCode);
+  @GetMapping(path="/api/{shortCode}")
+  ResponseEntity<ResponseDTO> getLongURL(@PathVariable("shortCode") String shortCode);
 
 }

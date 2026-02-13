@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.hashids.Hashids;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -72,12 +73,14 @@ public class ShortURLServiceImpl implements ShortURLService {
   }
 
   @Override
-  public ResponseEntity<String> getLongURL(String shortCode) {
+  public ResponseEntity<ResponseDTO> getLongURL(String shortCode) {
+    Validate.isTrue(StringUtils.isNotBlank(shortCode), "Please provide short code");
+//    Validate.isTrue(shortCode.trim().length()==7, "Please provide validate shortcode");
     Optional<String> longURL = shortURLRepository.findByShortCode(shortCode);
     if(longURL.isPresent()) {
-      return ResponseEntity.ok(longURL.get());
+      return ResponseEntity.ok(new ResponseDTO(longURL.get()));
     } else {
-      return ResponseEntity.badRequest().body("longURL not exists");
+      return ResponseEntity.badRequest().body(new ResponseDTO("Long URL not exists"));
     }
   }
 

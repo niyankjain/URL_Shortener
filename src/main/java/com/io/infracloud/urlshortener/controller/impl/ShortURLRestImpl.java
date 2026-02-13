@@ -26,7 +26,7 @@ public class ShortURLRestImpl implements ShortURLRest {
   }
 
   @Override
-  public ResponseEntity<String> getLongURL(String shortCode) {
+  public ResponseEntity<ResponseDTO> getLongURL(String shortCode) {
     LOGGER.info("Inside rest layer going to invoke @constructShortURL");
     return shortURLService.getLongURL(shortCode);
   }

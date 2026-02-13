@@ -24,21 +24,8 @@ repositories {
 	mavenCentral()
 }
 
-bootJar {
-	enabled = false
-}
-
-jar {
-	enabled = true
-}
-
-
-tasks.register('copyDependencies', Copy) {
-	from configurations.runtimeClasspath
-	into layout.buildDirectory.dir("libs/lib").get().asFile
-}
-
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-h2console'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
@@ -47,7 +34,7 @@ dependencies {
 	implementation("org.hashids:hashids:1.0.3")
 	implementation("net.bull.javamelody:javamelody-spring-boot4-starter:2.6.0")
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-actuator-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
