@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.io.infracloud.urlshortener.controller.DomainRest;
 import com.io.infracloud.urlshortener.dto.MatrixResponseDTO;
+import com.io.infracloud.urlshortener.dto.ResponseDTO;
 import com.io.infracloud.urlshortener.service.DomainService;
 
 import lombok.AllArgsConstructor;
@@ -20,5 +21,10 @@ public class DomainRestImpl implements DomainRest {
   @Override
   public ResponseEntity<List<MatrixResponseDTO>> getTopDomainMatrix() {
     return domainService.getTopDomainMatrix();
+  }
+
+  @Override
+  public ResponseEntity<ResponseDTO> addBlackListedDomain(String domain) {
+    return domainService.addBlackListedDomain(domain);
   }
 }

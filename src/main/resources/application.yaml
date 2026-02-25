@@ -10,8 +10,8 @@ spring:
   # MySQL Connection Settings
   datasource:
     url: "jdbc:mysql://localhost:3306/URL_SHORTENER"
-    username: "$MYSQL_USERNAME"
-    password: "$MYSQL_PASSWORD"
+    username: "@USERNAME"
+    password: "$PASSWORD"
     driver-class-name: "com.mysql.cj.jdbc.Driver"
   
   # JPA / Hibernate Settings

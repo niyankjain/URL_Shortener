@@ -1,8 +1,11 @@
 package com.io.infracloud.urlshortener.utils;
 
 import java.net.URI;
+import java.util.List;
 
 public class UrlUtils {
+
+  public static List<String> BLACKLISTED_DOMAINS = null;
 
   public static String extractDomain(String longUrl) {
 

@@ -1,6 +1,9 @@
 package com.io.infracloud.urlshortener.service.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -8,6 +11,8 @@ import org.hashids.Hashids;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,8 +47,13 @@ public class ShortURLServiceImpl implements ShortURLService {
     }
 
     LOGGER.info("inside service layer going to invoke @constructShortURL method");
-    String longUrlHash = HashUtils.sha256(longURLRequestDTO.getLongURL());
     String domainName = UrlUtils.extractDomain(longURLRequestDTO.getLongURL());
+
+    if(UrlUtils.BLACKLISTED_DOMAINS != null && UrlUtils.BLACKLISTED_DOMAINS.contains(domainName)) {
+      return ResponseEntity.badRequest().body(new ResponseDTO("BlackListed domain"));
+    }
+
+    String longUrlHash = HashUtils.sha256(longURLRequestDTO.getLongURL());
 
     LOGGER.info("longUrlHash: {}, domainName: {}",longUrlHash, domainName);
     Optional<ShortURL> shortURLEntity = shortURLRepository.findByLongUrlHash(longUrlHash);
@@ -75,7 +85,14 @@ public class ShortURLServiceImpl implements ShortURLService {
   public ResponseEntity<String> getLongURL(String shortCode) {
     Optional<String> longURL = shortURLRepository.findByShortCode(shortCode);
     if(longURL.isPresent()) {
-      return ResponseEntity.ok(longURL.get());
+      HttpHeaders headers = new HttpHeaders();
+      // Set the Location header with the long URL
+      try {
+        headers.setLocation(new URI(longURL.get()));
+      } catch (URISyntaxException e) {
+        throw new RuntimeException("Not able to redirect");
+      }
+      return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     } else {
       return ResponseEntity.badRequest().body("longURL not exists");
     }
