@@ -1,14 +1,19 @@
 package com.io.infracloud.urlshortener.service.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hashids.Hashids;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +29,7 @@ import com.io.infracloud.urlshortener.utils.HashUtils;
 import com.io.infracloud.urlshortener.utils.UrlUtils;
 
 import lombok.AllArgsConstructor;
+import net.bull.javamelody.internal.common.LOG;
 
 @AllArgsConstructor
 @Service
@@ -43,8 +49,13 @@ public class ShortURLServiceImpl implements ShortURLService {
     }
 
     LOGGER.info("inside service layer going to invoke @constructShortURL method");
-    String longUrlHash = HashUtils.sha256(longURLRequestDTO.getLongURL());
     String domainName = UrlUtils.extractDomain(longURLRequestDTO.getLongURL());
+
+    if(UrlUtils.BLACKLISTED_DOMAINS != null && UrlUtils.BLACKLISTED_DOMAINS.contains(domainName)) {
+      return ResponseEntity.badRequest().body(new ResponseDTO("BlackListed domain"));
+    }
+
+    String longUrlHash = HashUtils.sha256(longURLRequestDTO.getLongURL());
 
     LOGGER.info("longUrlHash: {}, domainName: {}",longUrlHash, domainName);
     Optional<ShortURL> shortURLEntity = shortURLRepository.findByLongUrlHash(longUrlHash);
@@ -52,15 +63,20 @@ public class ShortURLServiceImpl implements ShortURLService {
       LOGGER.info("short code is available {}",shortURLEntity.get().getShortCode());
       return ResponseEntity.ok(new ResponseDTO(shortURLEntity.get().getShortCode()));
     }
-
-    Domain domainEntity = getDomain(domainName);
+    Domain domainEntity = null;
+    try {
+      domainEntity = getDomain(domainName);
+    } catch (Exception e) {
+      LOGGER.error("Error occurred while inserting data in db: {}", ExceptionUtils.getStackTrace(e));
+      throw new RuntimeException(e);
+    }
     ShortURL shortURL = new ShortURL();
     shortURL.setLongUrl(longURLRequestDTO.getLongURL());
     shortURL.setLongUrlHash(longUrlHash);
     shortURL.setCreatedAt(LocalDateTime.now());
     shortURL.setDomain(domainEntity);
     ShortURL shortURLEntityFromDB = shortURLRepository.save(shortURL);
-    if(shortURLEntityFromDB != null && shortURLEntityFromDB.getId()>1) {
+    if(shortURLEntityFromDB != null && shortURLEntityFromDB.getId()>=1) {
       String shortCode = hashids.encode(shortURLEntityFromDB.getId());
       shortURLEntityFromDB.setShortCode(shortCode);
       ShortURL save = shortURLRepository.save(shortURLEntityFromDB);
@@ -78,7 +94,14 @@ public class ShortURLServiceImpl implements ShortURLService {
 //    Validate.isTrue(shortCode.trim().length()==7, "Please provide validate shortcode");
     Optional<String> longURL = shortURLRepository.findByShortCode(shortCode);
     if(longURL.isPresent()) {
-      return ResponseEntity.ok(new ResponseDTO(longURL.get()));
+      HttpHeaders headers = new HttpHeaders();
+      // Set the Location header with the long URL
+      try {
+        headers.setLocation(new URI(longURL.get()));
+      } catch (URISyntaxException e) {
+        throw new RuntimeException("Not able to redirect");
+      }
+      return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     } else {
       return ResponseEntity.badRequest().body(new ResponseDTO("Long URL not exists"));
     }
@@ -94,12 +117,19 @@ public class ShortURLServiceImpl implements ShortURLService {
       Domain domain = new Domain();
       domain.setDomainName(domainName);
       domain.setCreatedAt(LocalDateTime.now());
-      Domain domainEntityFromDB = domainRepository.save(domain);
-      if(domainEntityFromDB != null &&  domainEntityFromDB.getId() > 1) {
-        return domainEntityFromDB;
-      } else {
-        throw new RuntimeException(String.format("Domain not created with domain name: %s", domainName));
+      try {
+        Domain domainEntityFromDB = domainRepository.save(domain);
+        LOGGER.info("domainEntityFromDB: {}", domainEntityFromDB);
+        if(domainEntityFromDB != null &&  domainEntityFromDB.getId() >= 1) {
+          return domainEntityFromDB;
+        } else {
+          throw new RuntimeException(String.format("Domain not created with domain name: %s", domainName));
+        }
+      }catch (Exception ex) {
+        LOGGER.error("Exception occured while going to persisting data in db: cause: {}", ExceptionUtils.getStackTrace(ex));
+        throw ex;
       }
+
     }
   }
 }

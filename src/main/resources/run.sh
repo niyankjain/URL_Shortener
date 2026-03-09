@@ -4,8 +4,6 @@ APP_HOME=$(dirname "$0")
 
 # Set Java options for container environment
 JAVA_OPTS="-Xmx512m -Xms256m"
-JAVA_OPTS="$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom"
-JAVA_OPTS="$JAVA_OPTS -Dspring.profiles.active=prod"
 
 # External configuration paths
 CONFIG_PATH="$APP_HOME/config"

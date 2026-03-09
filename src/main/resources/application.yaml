@@ -16,7 +16,7 @@ spring:
 
   # MySQL Connection Settings
   datasource:
-    url: jdbc:h2:file:./data/url-shortener
+    url: jdbc:h2:file:/data/url-shortener
     username: sa
     password:
     driver-class-name: "org.h2.Driver"
@@ -26,6 +26,11 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update # Automatically creates/updates the database schema
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        SQL: DEBUG
 
 # Actuator service endpoint
 management:
@@ -36,8 +41,8 @@ management:
     shutdown:
       enabled: true
 
-#logging:
-#  level:
-#    org.springframework.boot.autoconfigure: DEBUG
-#    org.springframework.jdbc: DEBUG
-#    org.hibernate: DEBUG
+logging:
+  level:
+    org.springframework.boot.autoconfigure: DEBUG
+    org.springframework.jdbc: DEBUG
+    org.hibernate: DEBUG
