@@ -29,8 +29,6 @@ spring:
     properties:
       hibernate:
         show_sql: true
-        format_sql: true
-        SQL: DEBUG
 
 # Actuator service endpoint
 management:
@@ -41,8 +39,8 @@ management:
     shutdown:
       enabled: true
 
-logging:
-  level:
-    org.springframework.boot.autoconfigure: DEBUG
-    org.springframework.jdbc: DEBUG
-    org.hibernate: DEBUG
+#logging:
+#  level:
+#    org.springframework.boot.autoconfigure: DEBUG
+#    org.springframework.jdbc: DEBUG
+#    org.hibernate: DEBUG

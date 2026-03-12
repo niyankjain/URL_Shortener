@@ -18,7 +18,7 @@ public interface ShortURLRepository extends JpaRepository<ShortURL, Long> {
   @Query("""
       select new com.io.infracloud.urlshortener.dto.MatrixResponseDTO(d.domainName,count(s.id)) 
       from ShortURL s join s.domain d
-      group by d.id, d.domainName
+      group by d.id 
       order by count(s.id) desc
       """)
   List<MatrixResponseDTO> findTopDomains(Pageable pageable);
